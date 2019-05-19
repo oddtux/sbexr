@@ -154,7 +154,7 @@ typedef struct {
   uint64_t hash;
 
   uint16_t kindsize;
-  const SymbolDetailKind kind[];
+  const SymbolDetailKind *kind;
 } SymbolDetail;
 
 #pragma GCC diagnostic push

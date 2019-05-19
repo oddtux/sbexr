@@ -2,7 +2,7 @@ LLVMVERSION := 8
 LLVMCONFIG := llvm-config-$(LLVMVERSION)
 LIBS := $(shell $(LLVMCONFIG) --libs)
 DEBUG := -ggdb3 -O0
-CXXFLAGS := $(shell $(LLVMCONFIG) --cxxflags) $(DEBUG)
+CXXFLAGS := $(shell $(LLVMCONFIG) --cxxflags) -fexceptions
 LDFLAGS := $(shell $(LLVMCONFIG) --ldflags)
 TIME := time --format='MEM: unshared process size=%D, average total=%K, max resident=%M\nTIME: total wall time=%e, user time=%U, kernel time=%S'
 VERBOSE := --verbose
@@ -21,16 +21,14 @@ EXTRALIBS := -lclangFrontend \
 	     -lclangTooling \
 	     -lclangToolingCore \
 	     -lclangSerialization \
-	     -lclangRewrite \
-	     -lLLVMMC \
-	     -lLLVMSupport
+	     -lclangRewrite
 
 all: sbexr
 
 DEPS := sbexr.o indexer.o renderer.o wrapping.o rewriter.o cache.o mempool.o common.o counters.o ast.o pp-tracker.o
 
 sbexr: .depend $(DEPS)
-	$(CXX) -lclang-$(LLVMVERSION) -lLLVM-$(LLVMVERSION) $(CXXFLAGS) $(LDFLAGS) $(LIBS) $(LIBDIR) -o sbexr $(DEPS) $(EXTRALIBS)
+	$(CXX) -lLLVM-$(LLVMVERSION) $(CXXFLAGS) $(LDFLAGS) $(LIBS) $(LIBDIR) -o sbexr $(DEPS) $(EXTRALIBS)
 
 validator:
 	$(MAKE) -C ../validator
